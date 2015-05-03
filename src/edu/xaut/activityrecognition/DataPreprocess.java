@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,17 +11,13 @@ import java.util.List;
 import edu.xaut.entity.DataEntity;
 
 /**
- * 对数据进行预处理操作(去处数据集中缺失值数目大于3的数据项)
+ * 对数据进行预处理操作(删除含有缺失数据或是Locomotion标签为0的数据item)
  * @author Administrator
  *
  */
 public class DataPreprocess {
-
-	private File dataFile = null;
+	// 数据集所在目录
 	private String filePath = "";
-	private BufferedReader bufferedReader = null;
-	private List<DataEntity> dataList = new ArrayList<DataEntity>();
-	private int counter = 0;
 	
 	/**
 	 * 初始化数据集所在路径
@@ -38,22 +33,26 @@ public class DataPreprocess {
 		
 		System.out.println("********************数据预处理开始**********************");
 		preprocessing("S1-ADL1.dat");
-//		preprocessing("S1-ADL2.dat");
-//		preprocessing("S1-ADL3.dat");
-//		preprocessing("S1-Drill.dat");
-//		preprocessing("S2-Drill.dat");
+		preprocessing("S1-ADL2.dat");
+		preprocessing("S1-ADL3.dat");
+		preprocessing("S1-Drill.dat");
+		preprocessing("S2-Drill.dat");
 		System.out.println("********************数据预处理结束**********************");
 	}
 
 	private void preprocessing(String fileName){
+		
+		List<DataEntity> dataList = new ArrayList<DataEntity>();
+		int counter1 = 0;
+		
 		// 根据文件目录及其名称创建File对象
-		dataFile = new File(filePath + fileName);
+		File dataFile = new File(filePath + fileName);
 		
 		// 判断文件是否存在，且其属性是否为file
 		 if(dataFile.exists() && dataFile.isFile()){ 
 			 
 			 try {
-				bufferedReader = new BufferedReader(new FileReader(dataFile));
+				BufferedReader bufferedReader = new BufferedReader(new FileReader(dataFile));
 				String dataLine = "";
 				String[] wholeData = null;
 				try {
@@ -77,15 +76,17 @@ public class DataPreprocess {
 						// DataEntity对象的集合，为原始数据集合
 						dataList.add(dataEntity);
 						// 计数器
-						counter++;
+						counter1++;
 					
 					}
 						// 输出信息
-						System.out.print(fileName + "原始数据集数据共" + counter + "项！");
+						System.out.print(fileName + "原始数据集数据共" + counter1 + "项！");
 						// 数据预处理之删除含有缺失数据或是Locomotion标签为0的数据item
-						deleteItem();
+						deleteItem(dataList);
 						// 将预处理后的原始数据进行文件存储
 //						saveDataAsFile();
+						// 将预处理后的原始数据进行数据库存储
+//						saveDataAsDatabase(dataList);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -103,11 +104,11 @@ public class DataPreprocess {
 	}
 	
 	// 数据预处理之删除含有缺失数据或是Locomotion标签为0的数据item
-	private void deleteItem(){
+	private void deleteItem(List<DataEntity> dataList){
 		
 		DataEntity dataEntity = null;
 		List<String> dataItem = null;
-		counter = 0;
+		int counter2 = 0;
 		// 按顺序取出原始数据item--DataEntity
 		for(int i = 0;i < dataList.size();i++){
 			
@@ -123,7 +124,7 @@ public class DataPreprocess {
 					// 因为刚刚删除了一个item，因此i需要减1，使得下次循环可以访问当前item的下一条item
 					i--;
 					// 计数器
-					counter++;
+					counter2++;
 					break;
 				}else if(j == (dataItem.size() - 1) && dataItem.get(j).equals("0")){
 					// 删除DataEntity
@@ -131,12 +132,12 @@ public class DataPreprocess {
 					// 因为刚刚删除了一个item，因此i需要减1，使得下次循环可以访问当前item的下一条item
 					i--;
 					// 计数器
-					counter++;
+					counter2++;
 					break;
 				}
 			}
 		}
-		System.out.println("预处理删除数据共" + counter + "项！");
+		System.out.println("预处理删除数据共" + counter2 + "项！");
 	}
 	
 	// 将预处理后的原始数据进行文件存储
@@ -162,8 +163,26 @@ public class DataPreprocess {
 //	}
 	
 	// 将预处理后的原始数据进行数据库存储
-	private boolean saveDataAsDatabase(){
-		
-		return false;
-	}
+//	private boolean saveDataAsDatabase(List<DataEntity> dataList){
+//		// 返回值
+//		boolean result = false;
+//		// 要执行的sql语句
+//		String[] sql = new String[dataList.size()];
+//		
+//		for(int i = 0; i < dataList.size(); i++){
+//			List<String> items = dataList.get(i).getDataInfo();
+//			sql[i] = "insert into preprocessingdata (Time, RKN_accX, RKN_accY, RKN_accZ, HIP_accX, HIP_accY, HIP_accZ, " +
+//					"LUA_accX, LUA_accY, LUA_accZ, Locomotion) values ('" + items.get(0) + "', '" + items.get(1) + "', '" + 
+//					items.get(2) + "', '" + items.get(3) + "', '" + items.get(4) + "', '" + items.get(5) + "', '" +
+//					items.get(6) + "', '" + items.get(7) + "', '" + items.get(8) + "', '" + items.get(9) + "', '" + 
+//					items.get(10) + "');";
+//		}
+//		
+//		// 创建PreprocessingDataSaveDao对象
+//		PreprocessingDataSaveDao dao = new PreprocessingDataSaveImpl();
+//		// 保存预处理后的数据信息
+//		result = dao.save(sql);
+//		// 返回result
+//		return result;
+//	}
 }

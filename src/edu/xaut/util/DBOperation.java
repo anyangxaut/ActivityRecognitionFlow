@@ -20,41 +20,33 @@ public class DBOperation {
 	public Statement st=null;
 	public ResultSet rs=null;
 	
-	//只适用于增删改操作，不适用于查询操作
+	// 只适用于增删改操作，不适用于查询操作
 	public boolean excutesql(String[] sql) {
 		
 		boolean bool = true;
-		
 		DButil util = new DButil();
 		Connection con=util.openConnection();
 		
 		try {
-//			自动提交：在做记录更新时，系统会自动提交,不能保持事务的一致性，也就不能保证数据完整。
-//			手动提交：它则把事务处理将由你来完成，在发生异常时，可以进行事务回滚。保持事务的一致。
-			con.setAutoCommit(false);
-			
+			// 自动提交：在做记录更新时，系统会自动提交,不能保持事务的一致性，也就不能保证数据完整。
+			// 手动提交：它则把事务处理将由你来完成，在发生异常时，可以进行事务回滚。保持事务的一致。
+			con.setAutoCommit(false);	
 		    st=con.createStatement();
 		   
 			for(int i = 0; i < sql.length; i++){
-				
 //				System.out.println(sql[i]);
-				st.addBatch(sql[i]);//当要执行多条sql语句时，可以通过jdbc的批处理机制完成，这样可以提高执行效率。
+				// 当要执行多条sql语句时，可以通过jdbc的批处理机制完成，这样可以提高执行效率。
+				st.addBatch(sql[i]);
 			}
-			
-			st.executeBatch();//执行批处理
-			
+			// 执行批处理
+			st.executeBatch();
 			con.commit();
-			
 //			System.out.println("执行成功！");
 			
 		} catch (SQLException e) {
-			
-			try {
-				
+			try {	
 //				System.out.println("执行失败！");
-				
 				bool=false;
-				
 				con.rollback();
 				
 			} catch (SQLException e1) {
@@ -67,33 +59,27 @@ public class DBOperation {
 			
 			if(st!=null){
 				try {
-					
 					st.close();
-					
-					if(con!=null){
-						
+					// 如果数据库连接不为null，则关闭数据库连接
+					if(con!=null){	
 						con.close();
 					}
 				} catch (SQLException e) {
 					
 					e.printStackTrace();
-				}
-										
+				}								
 			}
 		}
 		return bool;
 	}
 	
-	//用于查询功能的方法，且只适用于查询
+	// 用于查询功能的方法，且只适用于查询
 	public ResultSet findsql(String sql) {
 		
 		try {
-			
 			DButil util = new DButil();
 			con=util.openConnection();
-			
 			st=con.createStatement();
-			
 			rs=st.executeQuery(sql);
 					
 		} catch (SQLException e) {
@@ -102,64 +88,18 @@ public class DBOperation {
 		}
 		
 	 return rs;
-
 	}
 	
-public ResultSet findsqllocal(String sql) {
-		
-		try {
-			
-			DButil util = new DButil();
-			con=util.openConnectionlocal();
-			
-			st=con.createStatement();
-			
-			rs=st.executeQuery(sql);
-					
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		
-	 return rs;
-
-	}
-
-
-public ResultSet findsqlqtk(String sql) {
-	
-	try {
-		
-		DButil util = new DButil();
-		con=util.openConnectionqtk();
-		
-		st=con.createStatement();
-		
-		rs=st.executeQuery(sql);
-				
-	} catch (SQLException e) {
-		
-		e.printStackTrace();
-	}
-	
- return rs;
-
-}
-	//查询操纵后，关闭数据库连接
+	// 查询操作后，关闭数据库连接
 	public void closeConn() {
 		
 		if(rs!=null)
 		{
 			try {
-				
 				rs.close();
-				
-				if(st!=null){
-					
+				if(st!=null){	
 					st.close();
-					
-					if(con!=null){
-						
+					if(con!=null){	
 						con.close();
 					}
 				}
@@ -169,6 +109,5 @@ public ResultSet findsqlqtk(String sql) {
 			}
 		}
 	}
-	
-	
+		
 }
