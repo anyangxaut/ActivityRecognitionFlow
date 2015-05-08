@@ -36,7 +36,10 @@ public class ActivityRecognition {
 		
 		
 		// 分类算法
-		
+		System.out.println("********************KNN分类算法开始**********************");
+		KNNAlgorithm knn = new KNNAlgorithm();
+		knn.startKNN();
+		System.out.println("********************KNN分类算法结束**********************");
 	}
 
 }
