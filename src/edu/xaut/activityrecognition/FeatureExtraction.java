@@ -238,7 +238,7 @@ public class FeatureExtraction {
 				// 循环读取查询到的数据记录
 				for(int i = 0; i < list.size(); i++){
 					List<String> data = list.get(i).getDataInfo();
-					correlation_difference[m-1][n-1] = (Double.parseDouble(data.get(m))- meanValue[m-1])
+					correlation_difference[m-1][n-1] += (Double.parseDouble(data.get(m))- meanValue[m-1])
 							* (Double.parseDouble(data.get(n))- meanValue[n-1]);
 				}		
 			}

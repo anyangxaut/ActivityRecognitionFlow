@@ -1,33 +1,9 @@
 package edu.xaut.activityrecognition;
 
 /**
- * Copyright (c) 2014, Version, 0.2, Dr. Wolfgang Lenhard, Psychometrica.de
- * All rights reserved.
- *
- * This code serves for calculating a linear discriminant analysis (LDA) and it is based on the
- * tutorial of Kardi Teknomo (http://people.revoledu.com/kardi/tutorial/LDA/index.html). You will
- * need JAMA (A Java Matrix Package; http://math.nist.gov/javanumerics/jama/) to run this routines.
- * Many thanks go to David Cabanillas for fixing a bug in the method matrixMultiplication(double[] A, double[][] B).
- * 
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * @author Dr. Wolfgang Lenhard, 2014
- * @version 0.1, 07/16/2014
- *
- * Quotation:
- * Lenhard, W. (2014). Realisation of Linear Discriminant Analysis in Java. Bibergau: Psychometrica.
- * 
+ * LDA（线性判别分析）算法实现
+ * 需要JAMAjar包的支持
+ * http://www.psychometrica.de/lda.html
  * 
  */
 import java.util.ArrayList;
@@ -41,46 +17,48 @@ public class LDA {
 	private ArrayList<Integer> groupList = new ArrayList<Integer>();
 
 	/**
-	 * Calculates a linear discriminant analysis (LDA) with all necessary
-	 * 
-	 * @param data
-	 *            The data as double array. The array must have the same size as
-	 *            the group array
-	 * @param group
-	 *            The membership in the different groups
-	 * @param p
-	 *            Set to true, if the probability estimation should be based on
-	 *            the real group sizes (true), or if the share of each group
-	 *            should be equal
+	 * LDA算法主要实现代码：
+	 * @param d data---存储数据信息，其数据个数必须与group分组个数一致(7)，即一一对应关系---x(i)
+	 * @param g group---分组数据信息---y(i)
+	 * @param p Set to true, if the probability estimation should be based on
+	 *          the real group sizes (true), or if the share of each group
+	 *          should be equal
 	 */
 	@SuppressWarnings("unchecked")
 	public LDA(double[][] d, int[] g, boolean p) {
-		// check if data and group array have the same size
+		
+		// 检查数据和分组信息是否一致，即一一对应关系
 		if (d.length != g.length)
 			return;
-
+		
+		// 存储data数据信息{ { 2.95, 6.63 }, { 2.53, 7.79 }, { 3.57, 5.65 },  
+		// { 3.16, 5.47 }, { 2.58, 4.46 }, { 2.16, 6.22 }, { 3.27, 3.52 } }
 		double[][] data = new double[d.length][d[0].length];
 		for (int i = 0; i < d.length; i++) {
 			for (int j = 0; j < d[i].length; j++) {
 				data[i][j] = d[i][j];
 			}
 		}
+		
+		// 存储group数据信息{1,1,1,1,2,2,2}
 		int[] group = new int[g.length];
 		for (int j = 0; j < g.length; j++) {
 			group[j] = g[j];
 		}
-
+		
+		// 原始数据（不区分类别）均值
 		double[] globalMean;
+		// 协方差
 		double[][][] covariance;
 
-		// determine number and label of groups
+		// 通过groupList存储标签信息1,2
 		for (int i = 0; i < group.length; i++) {
 			if (!groupList.contains(group[i])) {
 				groupList.add(group[i]);
 			}
 		}
 
-		// divide data into subsets
+		// 根据标签信息将数据划分为一个个子集，同一子集内的数据信息所对应的标签（类别）相同
 		ArrayList<double[]>[] subset = new ArrayList[groupList.size()];
 		for (int i = 0; i < subset.length; i++) {
 			subset[i] = new ArrayList<double[]>();
@@ -91,7 +69,7 @@ public class LDA {
 			}
 		}
 
-		// calculate group mean
+		// 计算每一个子集（标签1,2）内的中心点，即均值mean
 		groupMean = new double[subset.length][data[0].length];
 		for (int i = 0; i < groupMean.length; i++) {
 			for (int j = 0; j < groupMean[i].length; j++) {
@@ -99,13 +77,13 @@ public class LDA {
 			}
 		}
 
-		// calculate global mean
+		// 计算原始数据（不区分类别）的均值
 		globalMean = new double[data[0].length];
 		for (int i = 0; i < data[0].length; i++) {
 			globalMean[i] = getGlobalMean(i, data);
 		}
 
-		// correct subset data
+		// 将每一个子集内的数据-globalMean，存储在原来的位置,为下一步计算协方差准备好数据
 		for (int i = 0; i < subset.length; i++) {
 			for (int j = 0; j < subset[i].size(); j++) {
 				double[] v = subset[i].get(j);
@@ -117,11 +95,12 @@ public class LDA {
 			}
 		}
 
-		// calculate covariance
+		// 计算协方差
 		covariance = new double[subset.length][globalMean.length][globalMean.length];
 		for (int i = 0; i < covariance.length; i++) {
 			for (int j = 0; j < covariance[i].length; j++) {
 				for (int k = 0; k < covariance[i][j].length; k++) {
+					// 为每一个子集计算协方差，因为subset中存储的数据已经减去了globalMean，所以只需要相乘求和取其均值即可
 					for (int l = 0; l < subset[i].size(); l++)
 						covariance[i][j][k] += (subset[i].get(l)[j] * subset[i]
 								.get(l)[k]);
@@ -132,7 +111,7 @@ public class LDA {
 			}
 		}
 
-		// calculate pooled within group covariance matrix and invert it
+		// 逆协方差池
 		pooledInverseCovariance = new double[globalMean.length][globalMean.length];
 		for (int j = 0; j < pooledInverseCovariance.length; j++) {
 			for (int k = 0; k < pooledInverseCovariance[j].length; k++) {
@@ -146,14 +125,16 @@ public class LDA {
 		pooledInverseCovariance = new Matrix(pooledInverseCovariance).inverse()
 				.getArray();
 
-		// calculate probability for different groups
+		// 计算测试数据属于不同分组的概率
 		this.probability = new double[subset.length];
+		// 如果p为false的话，则每种类别的概率相同1/n，n为类别数
 		if (!p) {
 			double prob = 1.0d / groupList.size();
 			for (int i = 0; i < groupList.size(); i++) {
 				this.probability[i] = prob;
 			}
 		} else {
+			// 如果p为true的话，则每种类别的概率等于属于该分组的条目数除以总数
 			for (int i = 0; i < subset.length; i++) {
 				this.probability[i] = (double) subset[i].size()
 						/ (double) data.length;
@@ -180,7 +161,7 @@ public class LDA {
 	}
 
 	/**
-	 * Calculates the discriminant function values for the different groups
+	 * 计算不同分组的判别函数值
 	 * 
 	 * @param values
 	 * @return
@@ -188,6 +169,7 @@ public class LDA {
 	public double[] getDiscriminantFunctionValues(double[] values) {
 		double[] function = new double[groupList.size()];
 		for (int i = 0; i < groupList.size(); i++) {
+			// tmp就是w的转置
 			double[] tmp = matrixMultiplication(groupMean[i],
 					pooledInverseCovariance);
 			function[i] = (matrixMultiplication(tmp, values))
@@ -199,12 +181,11 @@ public class LDA {
 	}
 
 	/**
-	 * Calculates the discriminant function values for the different groups based on Mahalanobis distance
+	 * 根据马氏距离计算算不同分组的判别函数值
 	 * 
 	 * @param values
 	 * @return
 	 */
-	// TODO has to be tested yet
 	public double[] getMahalanobisDistance(double[] values) {
 		double[] function = new double[groupList.size()];
 		for (int i = 0; i < groupList.size(); i++) {
@@ -219,12 +200,11 @@ public class LDA {
 	}
 
 	/**
-	 * Predict the membership of an object to one of the different groups based on Mahalanobis distance
+	 * 通过玛氏距离预测测试数据属于哪个类别
 	 * 
 	 * @param values
 	 * @return the group
 	 */
-	// TODO has to be tested yet
 	public int predictM(double[] values) {
 		int group = -1;
 		double max = Double.NEGATIVE_INFINITY;
@@ -240,7 +220,7 @@ public class LDA {
 	}
 
 	/**
-	 * Calculates the probability for the membership in the different groups
+	 * 计算测试数据属于不同分组的概率
 	 * 
 	 * @param values
 	 * @return the probabilities
@@ -251,17 +231,24 @@ public class LDA {
 	}
 
 	/**
-	 * Returns the weight for the linear fisher's discrimination functions
+	 * 计算权值
 	 * 
 	 * @return the weights
 	 */
 	public double[] getFisherWeights() {
-		// TODO
-		return new double[] {};
+		
+		double[] tmp = null;
+		
+		for (int i = 0; i < groupList.size(); i++) {
+			// tmp就是w的转置
+			tmp = matrixMultiplication(groupMean[i],
+					pooledInverseCovariance);	
+		}
+		return tmp;
 	}
 
 	/**
-	 * Predict the membership of an object to one of the different groups.
+	 * 预测一个测试数据属于哪个类别
 	 * 
 	 * @param values
 	 * @return the group
@@ -280,41 +267,37 @@ public class LDA {
 		return group;
 	}
 
-	/**
-	 * Multiplies two matrices and returns the result as a double[][]-array.
-	 * Please not, that the number of rows in matrix a must be equal to the
-	 * number of columns in matrix b
-	 * 
-	 * @param a
-	 *            the first matrix
-	 * @param b
-	 *            the second matrix
-	 * @return the resulting matrix
-	 */
-	@SuppressWarnings("unused")
-	private double[][] matrixMultiplication(final double[][] matrixA,
-			final double[][] matrixB) {
-		int rowA = matrixA.length;
-		int colA = matrixA[0].length;
-		int colB = matrixB[0].length;
-
-		double c[][] = new double[rowA][colB];
-		for (int i = 0; i < rowA; i++) {
-			for (int j = 0; j < colB; j++) {
-				c[i][j] = 0;
-				for (int k = 0; k < colA; k++) {
-					c[i][j] = c[i][j] + matrixA[i][k] * matrixB[k][j];
-				}
-			}
-		}
-
-		return c;
-	}
+//	/**
+//	 * 两个矩阵相乘并将计算结果以 double[][]-array的形式返回.
+//	 * 
+//	 * @param a
+//	 *            the first matrix
+//	 * @param b
+//	 *            the second matrix
+//	 * @return the resulting matrix
+//	 */
+//	@SuppressWarnings("unused")
+//	private double[][] matrixMultiplication(final double[][] matrixA,
+//			final double[][] matrixB) {
+//		int rowA = matrixA.length;
+//		int colA = matrixA[0].length;
+//		int colB = matrixB[0].length;
+//
+//		double c[][] = new double[rowA][colB];
+//		for (int i = 0; i < rowA; i++) {
+//			for (int j = 0; j < colB; j++) {
+//				c[i][j] = 0;
+//				for (int k = 0; k < colA; k++) {
+//					c[i][j] = c[i][j] + matrixA[i][k] * matrixB[k][j];
+//				}
+//			}
+//		}
+//
+//		return c;
+//	}
 
 	/**
-	 * Multiplies two matrices and returns the result as a double[]-array.
-	 * Please not, that the number of rows in matrix a must be equal to the
-	 * number of columns in matrix b
+	 * 两个矩阵相乘并将计算结果以double[]-array形式返回.
 	 * 
 	 * @param a
 	 *            the first matrix
@@ -344,9 +327,7 @@ public class LDA {
 	}
 
 	/**
-	 * Multiplies two matrices and returns the result as a double (the second
-	 * matrix is transposed automatically). Please note, that the number of rows
-	 * in matrix a must be equal to the number of columns in matrix b
+	 * 两个矩阵相乘并将计算结果以double形式返回 
 	 * 
 	 * @param a
 	 *            the first matrix
@@ -364,44 +345,44 @@ public class LDA {
 		return c;
 	}
 
+//	/**
+//	 * 矩阵变换
+//	 * 
+//	 * @param matrix
+//	 *            the matrix to transpose
+//	 * @return the transposed matrix
+//	 */
+//	@SuppressWarnings("unused")
+//	private double[][] transpose(final double[][] matrix) {
+//		double[][] trans = new double[matrix[0].length][matrix.length];
+//		for (int i = 0; i < matrix.length; i++) {
+//			for (int j = 0; j < matrix[0].length; j++) {
+//				trans[j][i] = matrix[i][j];
+//			}
+//		}
+//
+//		return trans;
+//	}
+
+//	/**
+//	 * 矩阵变换
+//	 * 
+//	 * @param matrix
+//	 *            the matrix to transpose
+//	 * @return the transposed matrix
+//	 */
+//	@SuppressWarnings("unused")
+//	private double[][] transpose(final double[] matrix) {
+//		double[][] trans = new double[1][matrix.length];
+//		for (int i = 0; i < matrix.length; i++) {
+//			trans[0][i] = matrix[i];
+//		}
+//
+//		return trans;
+//	}
+
 	/**
-	 * Transposes a matrix
-	 * 
-	 * @param matrix
-	 *            the matrix to transpose
-	 * @return the transposed matrix
-	 */
-	@SuppressWarnings("unused")
-	private double[][] transpose(final double[][] matrix) {
-		double[][] trans = new double[matrix[0].length][matrix.length];
-		for (int i = 0; i < matrix.length; i++) {
-			for (int j = 0; j < matrix[0].length; j++) {
-				trans[j][i] = matrix[i][j];
-			}
-		}
-
-		return trans;
-	}
-
-	/**
-	 * Transposes a matrix
-	 * 
-	 * @param matrix
-	 *            the matrix to transpose
-	 * @return the transposed matrix
-	 */
-	@SuppressWarnings("unused")
-	private double[][] transpose(final double[] matrix) {
-		double[][] trans = new double[1][matrix.length];
-		for (int i = 0; i < matrix.length; i++) {
-			trans[0][i] = matrix[i];
-		}
-
-		return trans;
-	}
-
-	/**
-	 * Returns the mean of the given values. On error or empty data returns 0.
+	 * 返回样本均值. 当数据为null或者length=0时返回NaN.
 	 * 
 	 * @param values
 	 *            The values.
@@ -421,7 +402,7 @@ public class LDA {
 	}
 
 	/**
-	 * Test case with the original values from the tutorial of Kardi Teknomo
+	 * 测试代码
 	 * 
 	 * @param args
 	 */
@@ -431,14 +412,15 @@ public class LDA {
 				{ 3.16, 5.47 }, { 2.58, 4.46 }, { 2.16, 6.22 }, { 3.27, 3.52 } };
 
 		LDA test = new LDA(data, group, true);
-		double[] testData = { 2.81, 5.46 };
+//		double[] testData = { 2.81, 5.46 };
 		
 		//test
-		double[] values = test.getDiscriminantFunctionValues(testData);
+//		double[] values = test.getDiscriminantFunctionValues(testData);
+		double[] values = test.getFisherWeights();
 		for(int i = 0; i < values.length; i++){
-			System.out.println("Discriminant function " + (i+1) + ": " + values[i]);	
+			System.out.println("Weights " + (i+1) + ": " + values[i]);	
 		}
 		
-		System.out.println("Predicted group: " + test.predict(testData));
+//		System.out.println("Predicted group: " + test.predict(testData));
 	}
 }
