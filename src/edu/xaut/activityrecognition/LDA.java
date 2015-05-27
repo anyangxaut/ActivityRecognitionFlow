@@ -1,5 +1,4 @@
 package edu.xaut.activityrecognition;
-
 /**
  * LDA（线性判别分析）算法实现
  * 需要JAMAjar包的支持
@@ -11,9 +10,11 @@ import java.util.ArrayList;
 import Jama.Matrix;
 
 public class LDA {
+	// 每个类别的均值数据
 	private double[][] groupMean;
+	// 逆协方差池
 	private double[][] pooledInverseCovariance;
-	private double[] probability;
+	// 类别标签
 	private ArrayList<Integer> groupList = new ArrayList<Integer>();
 
 	/**
@@ -124,22 +125,6 @@ public class LDA {
 
 		pooledInverseCovariance = new Matrix(pooledInverseCovariance).inverse()
 				.getArray();
-
-		// 计算测试数据属于不同分组的概率
-		this.probability = new double[subset.length];
-		// 如果p为false的话，则每种类别的概率相同1/n，n为类别数
-		if (!p) {
-			double prob = 1.0d / groupList.size();
-			for (int i = 0; i < groupList.size(); i++) {
-				this.probability[i] = prob;
-			}
-		} else {
-			// 如果p为true的话，则每种类别的概率等于属于该分组的条目数除以总数
-			for (int i = 0; i < subset.length; i++) {
-				this.probability[i] = (double) subset[i].size()
-						/ (double) data.length;
-			}
-		}
 	}
 
 	private double getGroupMean(int column, ArrayList<double[]> data) {
@@ -161,140 +146,21 @@ public class LDA {
 	}
 
 	/**
-	 * 计算不同分组的判别函数值
-	 * 
-	 * @param values
-	 * @return
-	 */
-	public double[] getDiscriminantFunctionValues(double[] values) {
-		double[] function = new double[groupList.size()];
-		for (int i = 0; i < groupList.size(); i++) {
-			// tmp就是w的转置
-			double[] tmp = matrixMultiplication(groupMean[i],
-					pooledInverseCovariance);
-			function[i] = (matrixMultiplication(tmp, values))
-					- (.5d * matrixMultiplication(tmp, groupMean[i]))
-					+ Math.log(probability[i]);
-		}
-
-		return function;
-	}
-
-	/**
-	 * 根据马氏距离计算算不同分组的判别函数值
-	 * 
-	 * @param values
-	 * @return
-	 */
-	public double[] getMahalanobisDistance(double[] values) {
-		double[] function = new double[groupList.size()];
-		for (int i = 0; i < groupList.size(); i++) {
-			double[] dist = new double[groupMean[i].length];
-			for (int j = 0; j < dist.length; j++)
-				dist[j] = values[j] - groupMean[i][j];
-			function[i] = matrixMultiplication(matrixMultiplication(dist,
-					this.pooledInverseCovariance), dist);
-		}
-
-		return function;
-	}
-
-	/**
-	 * 通过玛氏距离预测测试数据属于哪个类别
-	 * 
-	 * @param values
-	 * @return the group
-	 */
-	public int predictM(double[] values) {
-		int group = -1;
-		double max = Double.NEGATIVE_INFINITY;
-		double[] discr = this.getMahalanobisDistance(values);
-		for (int i = 0; i < discr.length; i++) {
-			if (discr[i] > max) {
-				max = discr[i];
-				group = groupList.get(i);
-			}
-		}
-
-		return group;
-	}
-
-	/**
-	 * 计算测试数据属于不同分组的概率
-	 * 
-	 * @param values
-	 * @return the probabilities
-	 */
-	public double[] getProbabilityEstimates(double[] values) {
-		// TODO
-		return new double[] {};
-	}
-
-	/**
 	 * 计算权值
 	 * 
 	 * @return the weights
 	 */
-	public double[] getFisherWeights() {
+	public double[][] getFisherWeights() {
 		
-		double[] tmp = null;
+		double[][] tmp = new double[groupList.size()][];
 		
 		for (int i = 0; i < groupList.size(); i++) {
 			// tmp就是w的转置
-			tmp = matrixMultiplication(groupMean[i],
+			tmp[i] = matrixMultiplication(groupMean[i],
 					pooledInverseCovariance);	
 		}
 		return tmp;
 	}
-
-	/**
-	 * 预测一个测试数据属于哪个类别
-	 * 
-	 * @param values
-	 * @return the group
-	 */
-	public int predict(double[] values) {
-		int group = -1;
-		double max = Double.NEGATIVE_INFINITY;
-		double[] discr = this.getDiscriminantFunctionValues(values);
-		for (int i = 0; i < discr.length; i++) {
-			if (discr[i] > max) {
-				max = discr[i];
-				group = groupList.get(i);
-			}
-		}
-
-		return group;
-	}
-
-//	/**
-//	 * 两个矩阵相乘并将计算结果以 double[][]-array的形式返回.
-//	 * 
-//	 * @param a
-//	 *            the first matrix
-//	 * @param b
-//	 *            the second matrix
-//	 * @return the resulting matrix
-//	 */
-//	@SuppressWarnings("unused")
-//	private double[][] matrixMultiplication(final double[][] matrixA,
-//			final double[][] matrixB) {
-//		int rowA = matrixA.length;
-//		int colA = matrixA[0].length;
-//		int colB = matrixB[0].length;
-//
-//		double c[][] = new double[rowA][colB];
-//		for (int i = 0; i < rowA; i++) {
-//			for (int j = 0; j < colB; j++) {
-//				c[i][j] = 0;
-//				for (int k = 0; k < colA; k++) {
-//					c[i][j] = c[i][j] + matrixA[i][k] * matrixB[k][j];
-//				}
-//			}
-//		}
-//
-//		return c;
-//	}
 
 	/**
 	 * 两个矩阵相乘并将计算结果以double[]-array形式返回.
@@ -327,61 +193,6 @@ public class LDA {
 	}
 
 	/**
-	 * 两个矩阵相乘并将计算结果以double形式返回 
-	 * 
-	 * @param a
-	 *            the first matrix
-	 * @param b
-	 *            the second matrix
-	 * @return the resulting matrix
-	 */
-	private double matrixMultiplication(double[] matrixA, double[] matrixB) {
-
-		double c = 0d;
-		for (int i = 0; i < matrixA.length; i++) {
-			c += matrixA[i] * matrixB[i];
-		}
-
-		return c;
-	}
-
-//	/**
-//	 * 矩阵变换
-//	 * 
-//	 * @param matrix
-//	 *            the matrix to transpose
-//	 * @return the transposed matrix
-//	 */
-//	@SuppressWarnings("unused")
-//	private double[][] transpose(final double[][] matrix) {
-//		double[][] trans = new double[matrix[0].length][matrix.length];
-//		for (int i = 0; i < matrix.length; i++) {
-//			for (int j = 0; j < matrix[0].length; j++) {
-//				trans[j][i] = matrix[i][j];
-//			}
-//		}
-//
-//		return trans;
-//	}
-
-//	/**
-//	 * 矩阵变换
-//	 * 
-//	 * @param matrix
-//	 *            the matrix to transpose
-//	 * @return the transposed matrix
-//	 */
-//	@SuppressWarnings("unused")
-//	private double[][] transpose(final double[] matrix) {
-//		double[][] trans = new double[1][matrix.length];
-//		for (int i = 0; i < matrix.length; i++) {
-//			trans[0][i] = matrix[i];
-//		}
-//
-//		return trans;
-//	}
-
-	/**
 	 * 返回样本均值. 当数据为null或者length=0时返回NaN.
 	 * 
 	 * @param values
@@ -412,15 +223,14 @@ public class LDA {
 				{ 3.16, 5.47 }, { 2.58, 4.46 }, { 2.16, 6.22 }, { 3.27, 3.52 } };
 
 		LDA test = new LDA(data, group, true);
-//		double[] testData = { 2.81, 5.46 };
-		
-		//test
-//		double[] values = test.getDiscriminantFunctionValues(testData);
-		double[] values = test.getFisherWeights();
+
+		double[][] values = test.getFisherWeights();
 		for(int i = 0; i < values.length; i++){
-			System.out.println("Weights " + (i+1) + ": " + values[i]);	
+			System.out.println("Class " + (i+1) + ": ");	
+			for(int j = 0; j < values[i].length; j++){
+					System.out.println(values[i][j]);	
+			}
 		}
 		
-//		System.out.println("Predicted group: " + test.predict(testData));
 	}
 }
