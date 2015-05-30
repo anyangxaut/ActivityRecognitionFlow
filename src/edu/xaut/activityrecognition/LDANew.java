@@ -3,7 +3,6 @@ package edu.xaut.activityrecognition;
 import java.util.ArrayList;
 
 import Jama.Matrix;
-
 import edu.xaut.entity.LDAData;
 /**
  * LDA（线性判别分析）算法实现
@@ -14,9 +13,9 @@ import edu.xaut.entity.LDAData;
 public class LDANew {
 	
 	// 进行特征转换的原始数据维度---3维
-	private final static int DiMENSION = 3;
+	public final static int DiMENSION = 3;
 	// 每个类别的均值数据
-	private ArrayList<LDAData> groupMean = new ArrayList<LDAData>();
+	private ArrayList<LDAData> groupMean = null;
 	// 逆协方差池
 	double[][] pooledInverseCovariance = null;
 	// 类别标签
@@ -58,6 +57,7 @@ public class LDANew {
 		}
 		
 		// 计算每一个子集（标签1,2）内的中心点，即均值mean
+		groupMean = new ArrayList<LDAData>();
 		for (int i = 0; i < subset.length; i++) {
 			groupMean.add(getMean(subset[i]));	
 		}		
@@ -216,38 +216,38 @@ public class LDANew {
 		return C;
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-		int[] group = { 1, 1, 1, 1, 2, 2, 2 };
-				
-		LDAData[] ld = new LDAData[7];
-		ld[0] = new LDAData(2.95, 6.63, 2.63);
-		ld[1] = new LDAData(2.53, 7.79, 2.95);
-		ld[2] = new LDAData(3.57, 5.65, 3.53);
-		ld[3] = new LDAData(3.16, 5.47, 3.57);
-		ld[4] = new LDAData(2.58, 4.46, 2.15);
-		ld[5] = new LDAData(2.16, 6.22, 2.55);
-		ld[6] = new LDAData(3.27, 3.52, 3.16);
-		
-		ArrayList<LDAData> data = new ArrayList<LDAData>();
-		for(int i = 0; i < 7; i++){
-			data.add(ld[i]);
-		}
-
-		LDANew test = new LDANew(data, group);
-
-		double[][] values = test.getFisherWeights();
-		for(int i = 0; i < values.length; i++){
-			System.out.println("Class " + (i+1) + ": ");	
-			for(int j = 0; j < values[i].length; j++){
-				System.out.println(values[i][j]);	
-			}
-		}	
-	
-	}
+//	/**
+//	 * @param args
+//	 */
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//
+//		int[] group = { 1, 1, 1, 1, 2, 2, 2 };
+//				
+//		LDAData[] ld = new LDAData[7];
+//		ld[0] = new LDAData(2.95, 6.63, 2.63);
+//		ld[1] = new LDAData(2.53, 7.79, 2.95);
+//		ld[2] = new LDAData(3.57, 5.65, 3.53);
+//		ld[3] = new LDAData(3.16, 5.47, 3.57);
+//		ld[4] = new LDAData(2.58, 4.46, 2.15);
+//		ld[5] = new LDAData(2.16, 6.22, 2.55);
+//		ld[6] = new LDAData(3.27, 3.52, 3.16);
+//		
+//		ArrayList<LDAData> data = new ArrayList<LDAData>();
+//		for(int i = 0; i < 7; i++){
+//			data.add(ld[i]);
+//		}
+//
+//		LDANew test = new LDANew(data, group);
+//
+//		double[][] values = test.getFisherWeights();
+//		for(int i = 0; i < values.length; i++){
+//			System.out.println("Class " + (i+1) + ": ");	
+//			for(int j = 0; j < values[i].length; j++){
+//				System.out.println(values[i][j]);	
+//			}
+//		}	
+//	
+//	}
 
 }

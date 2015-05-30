@@ -9,11 +9,9 @@ import edu.xaut.entity.DataEntity;
  * @author Administrator
  *
  */
-public interface FeatureExtractionDao {
-		// 查询数据库中的数据库,并以List的形式返回数据信息
-		public List<DataEntity> search(String sql);
+public interface LDADao {
 		// 查询数据库中的数据库,并以List的形式返回数据信息(区分sensor)
-		public List<DataEntity> searchNew(String sql);
+		public List<DataEntity> search(String sql);
 		// 将特征提取后的数据保存至mysql数据库中
 		public boolean save(String[] sql);
 }

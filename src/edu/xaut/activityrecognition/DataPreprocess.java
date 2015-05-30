@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.xaut.dao.PreprocessingDataSaveDao;
+import edu.xaut.daoImpl.PreprocessingDataSaveImpl;
 import edu.xaut.entity.DataEntity;
 
 /**
@@ -35,6 +37,8 @@ public class DataPreprocess {
 		preprocessing("S1-ADL1.dat");
 		preprocessing("S1-ADL2.dat");
 		preprocessing("S1-ADL3.dat");
+		preprocessing("S1-ADL4.dat");
+		preprocessing("S1-ADL5.dat");
 		preprocessing("S1-Drill.dat");
 		preprocessing("S2-Drill.dat");
 		System.out.println("********************数据预处理结束**********************");
@@ -86,7 +90,7 @@ public class DataPreprocess {
 						// 将预处理后的原始数据进行文件存储
 //						saveDataAsFile();
 						// 将预处理后的原始数据进行数据库存储
-//						saveDataAsDatabase(dataList);
+						saveDataAsDatabase(dataList);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -163,26 +167,26 @@ public class DataPreprocess {
 //	}
 	
 	// 将预处理后的原始数据进行数据库存储
-//	private boolean saveDataAsDatabase(List<DataEntity> dataList){
-//		// 返回值
-//		boolean result = false;
-//		// 要执行的sql语句
-//		String[] sql = new String[dataList.size()];
-//		
-//		for(int i = 0; i < dataList.size(); i++){
-//			List<String> items = dataList.get(i).getDataInfo();
-//			sql[i] = "insert into preprocessingdata (Time, RKN_accX, RKN_accY, RKN_accZ, HIP_accX, HIP_accY, HIP_accZ, " +
-//					"LUA_accX, LUA_accY, LUA_accZ, Locomotion) values ('" + items.get(0) + "', '" + items.get(1) + "', '" + 
-//					items.get(2) + "', '" + items.get(3) + "', '" + items.get(4) + "', '" + items.get(5) + "', '" +
-//					items.get(6) + "', '" + items.get(7) + "', '" + items.get(8) + "', '" + items.get(9) + "', '" + 
-//					items.get(10) + "');";
-//		}
-//		
-//		// 创建PreprocessingDataSaveDao对象
-//		PreprocessingDataSaveDao dao = new PreprocessingDataSaveImpl();
-//		// 保存预处理后的数据信息
-//		result = dao.save(sql);
-//		// 返回result
-//		return result;
-//	}
+	private boolean saveDataAsDatabase(List<DataEntity> dataList){
+		// 返回值
+		boolean result = false;
+		// 要执行的sql语句
+		String[] sql = new String[dataList.size()];
+		
+		for(int i = 0; i < dataList.size(); i++){
+			List<String> items = dataList.get(i).getDataInfo();
+			sql[i] = "insert into preprocessingdata (Time, RKN_accX, RKN_accY, RKN_accZ, HIP_accX, HIP_accY, HIP_accZ, " +
+					"LUA_accX, LUA_accY, LUA_accZ, Locomotion) values ('" + items.get(0) + "', '" + items.get(1) + "', '" + 
+					items.get(2) + "', '" + items.get(3) + "', '" + items.get(4) + "', '" + items.get(5) + "', '" +
+					items.get(6) + "', '" + items.get(7) + "', '" + items.get(8) + "', '" + items.get(9) + "', '" + 
+					items.get(10) + "');";
+		}
+		
+		// 创建PreprocessingDataSaveDao对象
+		PreprocessingDataSaveDao dao = new PreprocessingDataSaveImpl();
+		// 保存预处理后的数据信息
+		result = dao.save(sql);
+		// 返回result
+		return result;
+	}
 }

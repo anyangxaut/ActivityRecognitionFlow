@@ -25,7 +25,7 @@ public class ClassificationAlgorithmsImpl implements ClassificationAlgorithmsDao
 				while (rs != null && rs.next() == true){
 					// 将每条数据记录存储在list中
 					List<Double> data = new ArrayList<Double>();
-					for(int i = 2; i < 111; i++){
+					for(int i = 3; i < 16 ; i++){
 					data.add(Double.parseDouble(rs.getString(i)));
 					}
 
