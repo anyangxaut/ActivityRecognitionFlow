@@ -120,14 +120,17 @@ public class KNNAlgorithm {
 	public void startKNN(){
 		// 创建ClassificationAlgorithmsDao类
 		ClassificationAlgorithmsDao dao = new ClassificationAlgorithmsImpl();
-		// 查询训练数据信息的sql语句	
-		String sqlFindTrain = "select * from fusionresult where Id > 50;";
+		//1: 查询训练数据信息的sql语句	
+		String sqlFindTrain = "select * from fusionresult where Id between 51 and 692;";
+//		//2: 查询训练数据信息的sql语句	
+//		String sqlFindTrain = "select * from fusionresult where Id between 916 and 1384;";
 		// 执行查询操作
 		List<List<Double>> trainList = dao.search(sqlFindTrain);
 		
-		
-		// 查询测试数据信息的sql语句
+		// 1:查询测试数据信息的sql语句
 		String sqlFindTest = "select * from fusionresult where Id < 51;";
+//		// 2:查询测试数据信息的sql语句
+//		String sqlFindTest = "select * from fusionresult where Id between 866 and 915;";
 		// 执行查询操作
 		List<List<Double>> testList = dao.search(sqlFindTest);
 		

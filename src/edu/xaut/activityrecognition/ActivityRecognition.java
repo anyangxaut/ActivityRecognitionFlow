@@ -42,7 +42,7 @@ public class ActivityRecognition {
 //		df.startLDA(2);
 //		df.startLDA(4);
 //		df.startLDA(5);
-		// 以动作1为分类目标进行融合
+//		// 以动作1为分类目标进行融合
 //		df.startFusion(1);
 //		// 以动作2为分类目标进行融合
 //		df.startFusion(2);
@@ -53,10 +53,10 @@ public class ActivityRecognition {
 //		System.out.println("********************数据融合结束**********************");
 		
 		// 分类算法
-		System.out.println("********************KNN分类算法开始**********************");
-		KNNAlgorithm knn = new KNNAlgorithm();
-		knn.startKNN();	
-		System.out.println("********************KNN分类算法结束**********************");
+//		System.out.println("********************KNN分类算法开始**********************");
+//		KNNAlgorithm knn = new KNNAlgorithm();
+//		knn.startKNN();	
+//		System.out.println("********************KNN分类算法结束**********************");
 	}
 
 }
