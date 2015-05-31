@@ -121,13 +121,13 @@ public class KNNAlgorithm {
 		// 创建ClassificationAlgorithmsDao类
 		ClassificationAlgorithmsDao dao = new ClassificationAlgorithmsImpl();
 		// 查询训练数据信息的sql语句	
-		String sqlFindTrain = "select * from fusionresult where Id > 10;";
+		String sqlFindTrain = "select * from fusionresult where Id > 50;";
 		// 执行查询操作
 		List<List<Double>> trainList = dao.search(sqlFindTrain);
 		
 		
 		// 查询测试数据信息的sql语句
-		String sqlFindTest = "select * from featureextraction where Id < 11;";
+		String sqlFindTest = "select * from fusionresult where Id < 51;";
 		// 执行查询操作
 		List<List<Double>> testList = dao.search(sqlFindTest);
 		

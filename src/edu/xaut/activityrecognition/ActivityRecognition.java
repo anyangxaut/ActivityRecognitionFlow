@@ -53,10 +53,10 @@ public class ActivityRecognition {
 //		System.out.println("********************数据融合结束**********************");
 		
 		// 分类算法
-//		System.out.println("********************KNN分类算法开始**********************");
-//		KNNAlgorithm knn = new KNNAlgorithm();
-//		knn.startKNN();	
-//		System.out.println("********************KNN分类算法结束**********************");
+		System.out.println("********************KNN分类算法开始**********************");
+		KNNAlgorithm knn = new KNNAlgorithm();
+		knn.startKNN();	
+		System.out.println("********************KNN分类算法结束**********************");
 	}
 
 }
