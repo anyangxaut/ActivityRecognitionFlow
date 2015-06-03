@@ -423,5 +423,39 @@ public class LDA {
 		
 		System.out.println("Predicted group: " + test.predict(testData));
 	}
+	
+//	/**
+//	 * @param args
+//	 */
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//
+//		int[] group = { 1, 1, 1, 1, 2, 2, 2 };
+//				
+//		LDAData[] ld = new LDAData[7];
+//		ld[0] = new LDAData(2.95, 6.63, 2.63);
+//		ld[1] = new LDAData(2.53, 7.79, 2.95);
+//		ld[2] = new LDAData(3.57, 5.65, 3.53);
+//		ld[3] = new LDAData(3.16, 5.47, 3.57);
+//		ld[4] = new LDAData(2.58, 4.46, 2.15);
+//		ld[5] = new LDAData(2.16, 6.22, 2.55);
+//		ld[6] = new LDAData(3.27, 3.52, 3.16);
+//		
+//		ArrayList<LDAData> data = new ArrayList<LDAData>();
+//		for(int i = 0; i < 7; i++){
+//			data.add(ld[i]);
+//		}
+//
+//		LDANew test = new LDANew(data, group);
+//
+//		double[][] values = test.getFisherWeights();
+//		for(int i = 0; i < values.length; i++){
+//			System.out.println("Class " + (i+1) + ": ");	
+//			for(int j = 0; j < values[i].length; j++){
+//				System.out.println(values[i][j]);	
+//			}
+//		}	
+//	
+//	}
 
 }
