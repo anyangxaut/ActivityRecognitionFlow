@@ -117,6 +117,7 @@ public class KNNAlgorithm {
 		return classes[maxIndex].toString();
 	}
 	
+	// KNN分类
 	public void startKNN(){
 		// 创建ClassificationAlgorithmsDao类
 		ClassificationAlgorithmsDao dao = new ClassificationAlgorithmsImpl();

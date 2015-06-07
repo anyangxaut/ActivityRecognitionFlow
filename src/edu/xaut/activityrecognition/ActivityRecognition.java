@@ -58,6 +58,14 @@ public class ActivityRecognition {
 //		KNNAlgorithm knn = new KNNAlgorithm();
 //		knn.startKNN();	
 //		System.out.println("********************KNN分类算法结束**********************");
+//		System.out.println("********************NBC分类算法开始**********************");
+//		NaiveBayesianAlgorithm nbc = new NaiveBayesianAlgorithm();
+//		nbc.startNBC();
+//		System.out.println("********************NBC分类算法结束**********************");
+		System.out.println("********************C4.5决策树分类算法开始**********************");
+		DecisionTreeAlgorithm dt = new DecisionTreeAlgorithm();
+		dt.startDecisionTree();
+		System.out.println("********************C4.5决策树分类算法结束**********************");
 	}
 
 }
