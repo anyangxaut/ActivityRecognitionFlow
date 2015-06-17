@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import edu.xaut.dao.ClassificationAlgorithmsDao;
-import edu.xaut.daoImpl.ClassificationAlgorithmsImpl;
+import edu.xaut.dao.DSDataFusionDao;
+import edu.xaut.daoImpl.DSDataFusionImpl;
 import edu.xaut.entity.KNNNode;
 
 /**
@@ -117,10 +117,103 @@ public class KNNAlgorithm {
 		return classes[maxIndex].toString();
 	}
 	
-	// KNN分类
-	public void startKNN(){
+//	// KNN分类
+//	public void startKNN(){
+//		// 创建ClassificationAlgorithmsDao类
+//		ClassificationAlgorithmsDao dao = new ClassificationAlgorithmsImpl();
+//		// 存储训练集数据
+//		List<List<Double>> trainList = null;
+//		// 存储测试集数据
+//		List<List<Double>> testList = null;
+//		
+//		// 九折交叉验证
+//		for(int i = 0; i < 9; i++){
+//			// 对于动作stand,locomation=1,(1-692)
+//			// 查询测试数据信息的sql语句	
+//			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+1) + " and " + ((i+1)*50) + ";";
+//			// 执行查询操作
+//			testList = dao.search(sqlFindTest);
+//			
+//			// 查询训练数据信息的sql语句(前半部分)
+//			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50) + ";";
+//			// 执行查询操作
+//			trainList = dao.search(sqlFindTrain1);
+//			// 查询训练数据信息的sql语句(后半部分)
+//			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+1) + " and 692;";
+//			// 执行查询操作
+//			trainList.addAll(dao.search(sqlFindTrain2));
+//			
+////			// 对于动作walk,locomation=2,(693-1384)
+////			// 查询测试数据信息的sql语句	
+////			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+693) + " and " + ((i+1)*50+692) + ";";
+////			// 执行查询操作
+////			testList = dao.search(sqlFindTest);
+////			
+////			// 查询训练数据信息的sql语句(前半部分)
+////			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50+692) + ";";
+////			// 执行查询操作
+////			trainList = dao.search(sqlFindTrain1);
+////			// 查询训练数据信息的sql语句(后半部分)
+////			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+693) + " and 1384;";
+////			// 执行查询操作
+////			trainList.addAll(dao.search(sqlFindTrain2));
+//			
+////			// 对于动作sit,locomation=4,(1385-2076)
+////			// 查询测试数据信息的sql语句	
+////			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+1385) + " and " + ((i+1)*50+1384) + ";";
+////			// 执行查询操作
+////			testList = dao.search(sqlFindTest);
+////			
+////			// 查询训练数据信息的sql语句(前半部分)
+////			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50+1384) + ";";
+////			// 执行查询操作
+////			trainList = dao.search(sqlFindTrain1);
+////			// 查询训练数据信息的sql语句(后半部分)
+////			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+1385) + " and 2076;";
+////			// 执行查询操作
+////			trainList.addAll(dao.search(sqlFindTrain2));
+//			
+////			// 对于动作lie,locomation=5,(2077-2768)
+////			// 查询测试数据信息的sql语句	
+////			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+2077) + " and " + ((i+1)*50+2076) + ";";
+////			// 执行查询操作
+////			testList = dao.search(sqlFindTest);
+////			
+////			// 查询训练数据信息的sql语句(前半部分)
+////			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50+2076) + ";";
+////			// 执行查询操作
+////			trainList = dao.search(sqlFindTrain1);
+////			// 查询训练数据信息的sql语句(后半部分)
+////			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+2077) + " and 2768;";
+////			// 执行查询操作
+////			trainList.addAll(dao.search(sqlFindTrain2));
+//			
+//			// 正确分类的数据量
+//			int correctClassify = 0;
+//			
+//			// 通过KNN算法进行分类
+//			for(int j = 0; j < testList.size(); j++){
+//				// 从测试数据列表中取出单个测试数据信息
+//				 List<Double> test = testList.get(j);    
+////	             System.out.print("类别为: ");  
+////	             System.out.println(Math.round(Float.parseFloat((knn(trainList, test, 3)))));
+//				 String knnClassify = String.valueOf((double)Math.round(Float.parseFloat((knn(trainList, test, 3)))));
+//				 String realClassify = String.valueOf(test.get(test.size()-1));
+//				 if(knnClassify.equals(realClassify)){
+//					 correctClassify++;
+//				 }
+//			}
+//			System.out.println("第" + (i+1) + "轮交叉验证测试数据量为" + testList.size() + "，正确分类数据量为" + correctClassify
+//					+ "，识别率为" + ((double)correctClassify / testList.size()));  
+//		}
+//	}
+	
+	
+	//KNN-DS
+	public void startKNNDS(){
+
 		// 创建ClassificationAlgorithmsDao类
-		ClassificationAlgorithmsDao dao = new ClassificationAlgorithmsImpl();
+		DSDataFusionDao dao = new DSDataFusionImpl();
 		// 存储训练集数据
 		List<List<Double>> trainList = null;
 		// 存储测试集数据
@@ -130,63 +223,18 @@ public class KNNAlgorithm {
 		for(int i = 0; i < 9; i++){
 			// 对于动作stand,locomation=1,(1-692)
 			// 查询测试数据信息的sql语句	
-			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+1) + " and " + ((i+1)*50) + ";";
+			String sqlFindTest = "select * from dsfusion where Id between " + (i*50+1) + " and " + ((i+1)*50) + ";";
 			// 执行查询操作
 			testList = dao.search(sqlFindTest);
 			
 			// 查询训练数据信息的sql语句(前半部分)
-			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50) + ";";
+			String sqlFindTrain1 = "select * from dsfusion where Id between 0 and " + (i*50) + ";";
 			// 执行查询操作
 			trainList = dao.search(sqlFindTrain1);
 			// 查询训练数据信息的sql语句(后半部分)
-			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+1) + " and 692;";
+			String sqlFindTrain2 = "select * from dsfusion where Id between " + ((i+1)*50+1) + " and 692;";
 			// 执行查询操作
 			trainList.addAll(dao.search(sqlFindTrain2));
-			
-//			// 对于动作walk,locomation=2,(693-1384)
-//			// 查询测试数据信息的sql语句	
-//			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+693) + " and " + ((i+1)*50+692) + ";";
-//			// 执行查询操作
-//			testList = dao.search(sqlFindTest);
-//			
-//			// 查询训练数据信息的sql语句(前半部分)
-//			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50+692) + ";";
-//			// 执行查询操作
-//			trainList = dao.search(sqlFindTrain1);
-//			// 查询训练数据信息的sql语句(后半部分)
-//			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+693) + " and 1384;";
-//			// 执行查询操作
-//			trainList.addAll(dao.search(sqlFindTrain2));
-			
-//			// 对于动作sit,locomation=4,(1385-2076)
-//			// 查询测试数据信息的sql语句	
-//			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+1385) + " and " + ((i+1)*50+1384) + ";";
-//			// 执行查询操作
-//			testList = dao.search(sqlFindTest);
-//			
-//			// 查询训练数据信息的sql语句(前半部分)
-//			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50+1384) + ";";
-//			// 执行查询操作
-//			trainList = dao.search(sqlFindTrain1);
-//			// 查询训练数据信息的sql语句(后半部分)
-//			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+1385) + " and 2076;";
-//			// 执行查询操作
-//			trainList.addAll(dao.search(sqlFindTrain2));
-			
-//			// 对于动作lie,locomation=5,(2077-2768)
-//			// 查询测试数据信息的sql语句	
-//			String sqlFindTest = "select * from fusionresult where Id between " + (i*50+2077) + " and " + ((i+1)*50+2076) + ";";
-//			// 执行查询操作
-//			testList = dao.search(sqlFindTest);
-//			
-//			// 查询训练数据信息的sql语句(前半部分)
-//			String sqlFindTrain1 = "select * from fusionresult where Id between 0 and " + (i*50+2076) + ";";
-//			// 执行查询操作
-//			trainList = dao.search(sqlFindTrain1);
-//			// 查询训练数据信息的sql语句(后半部分)
-//			String sqlFindTrain2 = "select * from fusionresult where Id between " + ((i+1)*50+2077) + " and 2768;";
-//			// 执行查询操作
-//			trainList.addAll(dao.search(sqlFindTrain2));
 			
 			// 正确分类的数据量
 			int correctClassify = 0;
@@ -206,6 +254,7 @@ public class KNNAlgorithm {
 			System.out.println("第" + (i+1) + "轮交叉验证测试数据量为" + testList.size() + "，正确分类数据量为" + correctClassify
 					+ "，识别率为" + ((double)correctClassify / testList.size()));  
 		}
+	
 	}
 }
 

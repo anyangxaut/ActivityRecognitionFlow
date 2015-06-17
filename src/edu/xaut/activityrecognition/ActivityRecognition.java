@@ -53,19 +53,27 @@ public class ActivityRecognition {
 //		System.out.println("********************数据融合结束**********************");
 		
 		// 分类算法
-//		System.out.println("********************KNN分类算法开始**********************");
-//		// 利用KNN进行分类识别
-//		KNNAlgorithm knn = new KNNAlgorithm();
-//		knn.startKNN();	
-//		System.out.println("********************KNN分类算法结束**********************");
+		System.out.println("********************KNN分类算法开始**********************");
+		// 利用KNN进行分类识别
+		KNNAlgorithm knn = new KNNAlgorithm();
+		knn.startKNNDS();	
+		System.out.println("********************KNN分类算法结束**********************");
 //		System.out.println("********************NBC分类算法开始**********************");
 //		NaiveBayesianAlgorithm nbc = new NaiveBayesianAlgorithm();
-//		nbc.startNBC();
+//		nbc.startNBCDS();
 //		System.out.println("********************NBC分类算法结束**********************");
-		System.out.println("********************C4.5决策树分类算法开始**********************");
-		DecisionTreeAlgorithm dt = new DecisionTreeAlgorithm();
-		dt.startDecisionTree();
-		System.out.println("********************C4.5决策树分类算法结束**********************");
+//		System.out.println("********************C4.5决策树分类算法开始**********************");
+//		DecisionTreeAlgorithm dt = new DecisionTreeAlgorithm();
+//		dt.startDecisionTreeDS();
+//		System.out.println("********************C4.5决策树分类算法结束**********************");
+		
+		
+		//D-S证据理论预备工作之NBC求出各个行为动作的分类概率
+//		System.out.println("********************NBC分类算法开始**********************");
+//		DSNaiveBayesianAlgorithm ds = new DSNaiveBayesianAlgorithm();
+//		ds.startDSNBC();
+//		System.out.println("********************NBC分类算法结束**********************");
+		
 	}
 
 }
