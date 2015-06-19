@@ -15,7 +15,7 @@ import edu.xaut.entity.DataEntity;
 public class MatlabDS {
 
 	public void startMatlabDS(){
-		preprocessing("C:\\Users\\Administrator\\Desktop\\anyang\\finaldata.txt");
+		preprocessing("C:\\Users\\Administrator\\Desktop\\version1\\DSfusion.txt");
 	}
 	
 	private void preprocessing(String filePath){

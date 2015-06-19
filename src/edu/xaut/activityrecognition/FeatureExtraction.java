@@ -20,15 +20,14 @@ public class FeatureExtraction {
 	// 重叠率
 	private final double overlap;
 	// 数据总量
-	private final int sumData;
+//	private final int sumData;
 	
 	// 通过构造方法初始化类属性字段
-	public FeatureExtraction(int sensorNum, int windowSize, double overlap, int sumData) {
+	public FeatureExtraction(int sensorNum, int windowSize, double overlap) {
 		// TODO Auto-generated constructor stub
 		 this.sensorNum = sensorNum;
 		 this.windowSize = windowSize;
 		 this.overlap = overlap;
-		 this.sumData = sumData;
 	}
 	
 	// 将不同的动作类型数据存储在不同的表中
@@ -40,12 +39,11 @@ public class FeatureExtraction {
 		// 执行查询操作
 		List<DataEntity> list = dao.search(sqlFind1);
 		// sql插入语句
-		String[] sqlAdd = new String[sumData * sensorNum];
+		String[] sqlAdd = new String[list.size() * sensorNum];
 		// sql数组下标
 		int index = 0;
 		// 循环读取查询到的数据记录
 		for(int i = 0; i < list.size(); i++){
-			if(i > sumData-1){break;}
 			List<String> data = list.get(i).getDataInfo();
 			// 传感器1的数据信息
 			sqlAdd[index++] = "insert into " + tableName + " (SensorId, AccX, AccY, AccZ, Locomotion) " +
@@ -63,7 +61,7 @@ public class FeatureExtraction {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void startFeatureExtraction(int Locomotion, String tableName){
+	public void startFeatureExtraction(int Locomotion, String tableName, int sumData){
 		// 创建FeatureExtractionDao类
 		FeatureExtractionDao dao = new FeatureExtractionImpl();
 		// 计算重叠窗口大小

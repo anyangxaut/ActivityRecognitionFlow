@@ -147,13 +147,13 @@ public class DecisionTreeAlgorithm {
 	 		// 存储测试集数据
 	 		List<List<Double>> testList = null;
 	 		
-	 		// 九折交叉验证
-	 		for(int i = 0; i < 9; i++){
+	 		// 10折交叉验证
+	 		for(int i = 0; i < 10; i++){
 	 			// 对于动作stand,locomation=1,(1-692)
 	 			// 训练DecisionTree模型
 				trainDecisionTree();
 	 			// 查询测试数据信息的sql语句	
-	 			String sqlFindTest = "select * from dsfusion where Id between " + (i*50+1) + " and " + ((i+1)*50) + ";";
+	 			String sqlFindTest = "select * from dsfusion where Id between " + (i*700+1) + " and " + ((i+1)*700) + ";";
 	 			// 执行查询操作
 	 			testList = dao.search(sqlFindTest);
 	 			

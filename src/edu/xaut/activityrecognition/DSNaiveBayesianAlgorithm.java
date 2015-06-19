@@ -1,9 +1,13 @@
 package edu.xaut.activityrecognition;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.xaut.dao.ClassificationAlgorithmsDao;
 import edu.xaut.daoImpl.ClassificationAlgorithmsImpl;
+import edu.xaut.entity.DataEntity;
 
 /**
  * 为DS证据理论后续工作做准备
@@ -29,6 +33,7 @@ public class DSNaiveBayesianAlgorithm {
 	private double[] varianceLie = null;
 	// 创建ClassificationAlgorithmsDao类
 	private ClassificationAlgorithmsDao dao = new ClassificationAlgorithmsImpl();
+	private List<DataEntity> dataList = new ArrayList<DataEntity>();
 
 	// NBC算法:利用训练数据训练NBC识别模型
 	public void trainNBC(int sensorId) {
@@ -106,6 +111,14 @@ public class DSNaiveBayesianAlgorithm {
 		}
 		System.out.println("resultStand:" + resultStand + ";resultWalk:" + resultWalk + ";resultSit:" + resultSit +
 				";resultLie:" + resultLie);
+
+		List<String> datainfo = new ArrayList<String>();
+		datainfo.add(String.valueOf(resultStand));
+		datainfo.add(String.valueOf(resultWalk));
+		datainfo.add(String.valueOf(resultSit));
+		datainfo.add(String.valueOf(resultLie));
+		DataEntity data = new DataEntity(datainfo);
+		dataList.add(data);
 		return Max(resultStand, resultWalk, resultSit, resultLie);
 	}
 	
@@ -175,8 +188,9 @@ public class DSNaiveBayesianAlgorithm {
     }
     
     
- // NBC分类
+   // NBC分类
  	public void startDSNBC(){
+		dataList = new ArrayList<DataEntity>();
  		// 存储测试集数据
  		List<List<Double>> testList = null;
  			// 训练NBC模型
@@ -202,7 +216,32 @@ public class DSNaiveBayesianAlgorithm {
  					 correctClassify++;
  				 }
  			}
+ 			saveDataAsFile(dataList);
  			System.out.println("测试数据量为" + testList.size() + "，正确分类数据量为" + correctClassify
  					+ "，识别率为" + ((double)correctClassify / testList.size()));  
  	}
+ 	
+ 	
+ 	
+	// 将预处理后的原始数据进行文件存储
+	private boolean saveDataAsFile(List<DataEntity> dataList){
+		
+	FileWriter writer;
+		try {
+			// 通过保存文件的路径及其文件名称初始化FileWriter对象
+			writer = new FileWriter("C:\\Users\\Administrator\\Desktop\\version1\\NBC\\nbcsensor3.txt",true);
+			// 将预处理后的原始数据逐条进行存储
+			for(int i = 0; i < dataList.size();i++){
+				writer.write(dataList.get(i).getDataInfo().toString() + "\n");
+//				System.out.println(dataList.get(i).getDataInfo().get(10));
+				}
+			writer.close();
+			return true;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
