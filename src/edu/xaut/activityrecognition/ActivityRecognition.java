@@ -14,7 +14,7 @@ public class ActivityRecognition {
 //		
 //		
 //		// 窗口划分，特征提取
-//		FeatureExtraction featureExtraction = new FeatureExtraction(3, 64, 0.5);
+//		FeatureExtraction featureExtraction = new FeatureExtraction(3, 16, 0.5);
 //		// 将不同的动作类型数据存储在不同的表中
 //		System.out.println("********************动作类型划分开始**********************");
 //		featureExtraction.splitAction(1, "stand");
@@ -33,8 +33,8 @@ public class ActivityRecognition {
 //		// 对"lie"动作进行特征提取
 //		featureExtraction.startFeatureExtraction(5, "lie", 5572);
 //		System.out.println("********************特征提取结束**********************");
-		
-		
+//		
+//		
 //		// 数据融合
 //		System.out.println("********************数据融合开始**********************");
 //		DataFusion df = new DataFusion();
@@ -58,21 +58,21 @@ public class ActivityRecognition {
 //		KNNAlgorithm knn = new KNNAlgorithm();
 //		knn.startKNN();	
 //		System.out.println("********************KNN分类算法结束**********************");
-//		System.out.println("********************NBC分类算法开始**********************");
-//		NaiveBayesianAlgorithm nbc = new NaiveBayesianAlgorithm();
-//		nbc.startNBC();
-//		System.out.println("********************NBC分类算法结束**********************");
+		System.out.println("********************NBC分类算法开始**********************");
+		NaiveBayesianAlgorithm nbc = new NaiveBayesianAlgorithm();
+		nbc.startNBC();
+		System.out.println("********************NBC分类算法结束**********************");
 //		System.out.println("********************C4.5决策树分类算法开始**********************");
 //		DecisionTreeAlgorithm dt = new DecisionTreeAlgorithm();
 //		dt.startDecisionTree();
 //		System.out.println("********************C4.5决策树分类算法结束**********************");
 		
 		
-		//D-S证据理论预备工作之NBC求出各个行为动作的分类概率
-		System.out.println("********************NBC分类算法开始**********************");
-		DSNaiveBayesianAlgorithm ds = new DSNaiveBayesianAlgorithm();
-		ds.startDSNBC();
-		System.out.println("********************NBC分类算法结束**********************");
+//		//D-S证据理论预备工作之NBC求出各个行为动作的分类概率
+//		System.out.println("********************NBC分类算法开始**********************");
+//		DSNaiveBayesianAlgorithm ds = new DSNaiveBayesianAlgorithm();
+//		ds.startDSNBC();
+//		System.out.println("********************NBC分类算法结束**********************");
 		
 		// DS分类算法
 //		System.out.println("********************KNN分类算法开始**********************");

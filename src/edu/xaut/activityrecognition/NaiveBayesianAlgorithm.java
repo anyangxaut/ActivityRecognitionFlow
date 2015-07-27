@@ -183,7 +183,7 @@ public class NaiveBayesianAlgorithm {
 // 			// 训练NBC模型
 //			trainNBC(1);
 // 			// 查询测试数据信息的sql语句	
-// 			String sqlFindTest = "select * from fusionresult where Id between " + (i*700+1) + " and " + ((i+1)*700) + ";";
+// 			String sqlFindTest = "select * from fusionresult where Id between " + (i*2800+1) + " and " + ((i+1)*2800) + ";";
 // 			// 执行查询操作
 // 			testList = dao.search(sqlFindTest);
  			
@@ -191,7 +191,7 @@ public class NaiveBayesianAlgorithm {
 // 			// 训练NBC模型
 //			trainNBC(2);
 // 			// 查询测试数据信息的sql语句	
-// 			String sqlFindTest = "select * from fusionresult where Id between " + (i*700+7004) + " and " + ((i+1)*700+7003) + ";";
+// 			String sqlFindTest = "select * from fusionresult where Id between " + (i*2800+28026) + " and " + ((i+1)*2800+28025) + ";";
 // 			// 执行查询操作
 // 			testList = dao.search(sqlFindTest);
  			
@@ -200,7 +200,7 @@ public class NaiveBayesianAlgorithm {
 // 		    // 训练NBC模型
 //			trainNBC(4);
 // 			// 查询测试数据信息的sql语句	
-// 			String sqlFindTest = "select * from fusionresult where Id between " + (i*700+14007) + " and " + ((i+1)*700+14006) + ";";
+// 			String sqlFindTest = "select * from fusionresult where Id between " + (i*2800+56051) + " and " + ((i+1)*2800+56050) + ";";
 // 			// 执行查询操作
 // 			testList = dao.search(sqlFindTest);
 
@@ -209,7 +209,7 @@ public class NaiveBayesianAlgorithm {
  		    // 训练NBC模型
 			trainNBC(5);
  			// 查询测试数据信息的sql语句	
- 			String sqlFindTest = "select * from fusionresult where Id between " + (i*700+21010) + " and " + ((i+1)*700+21009) + ";";
+ 			String sqlFindTest = "select * from fusionresult where Id between " + (i*2800+84076) + " and " + ((i+1)*2800+84075) + ";";
  			// 执行查询操作
  			testList = dao.search(sqlFindTest);
 
@@ -221,14 +221,14 @@ public class NaiveBayesianAlgorithm {
  			for(int j = 0; j < testList.size(); j++){
  				// 从测试数据列表中取出单个测试数据信息
  				 List<Double> test = testList.get(j);    
-// 	             System.out.print("类别为: ");  
-// 	             System.out.println(Math.round(Float.parseFloat((knn(trainList, test, 3)))));
  
  				 String nbcClassify = String.valueOf(testNBC(test));
  				 String realClassify = String.valueOf(test.get(test.size()-1));
- 				 if(nbcClassify.equals(realClassify)){
- 					 correctClassify++;
- 				 }
+ 				 
+ 					if(nbcClassify.equals(realClassify)){
+ 	 					 correctClassify++;
+ 	 				 }
+ 				 
  			}
  			System.out.println("第" + (i+1) + "轮交叉验证测试数据量为" + testList.size() + "，正确分类数据量为" + correctClassify
  					+ "，识别率为" + ((double)correctClassify / testList.size()));  
